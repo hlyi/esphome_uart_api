@@ -6,8 +6,8 @@ Provide the full ESPHome Native API (protobuf-based) over UART instead of TCP po
 ## Architecture
 
 ```
-External MCU/ESP  ──UART──  ESP32-C3  ──loopback TCP──  ESPHome API Server
-  (230400 baud)              (uart_api)                  (port 6053)
+TCP-UART-Server  ──UART──  ESP32-C3  ──loopback TCP──  ESPHome API Server
+  (230400 baud)           (uart_api)                   (port 6053)
 ```
 
 - `UARTAPIBridge` (external component) reads UART bytes, forwards them to a loopback TCP connection to the ESPHome API server.
