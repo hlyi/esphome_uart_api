@@ -59,3 +59,5 @@ External MCU/ESP  ──UART──  ESP32-C3  ──loopback TCP──  ESPHome 
 - `logger.baud_rate: 0` (serial logging disabled — needed to avoid conflict).
 - `uart_api` config: port 6053, rx buffer 512.
 
+## TODO
+- Support OTA
