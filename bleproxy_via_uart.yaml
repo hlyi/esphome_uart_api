@@ -6,6 +6,10 @@ esphome:
     version: "1.0.0"
   platformio_options:
     board_build.flash_mode: dio
+  on_boot:
+    then:
+      - lambda: |-
+          App.set_loop_interval(2);
 
 esp32:
   board: esp32-c3-devkitm-1
@@ -36,18 +40,9 @@ bluetooth_proxy:
   active: false
   connection_slots: 4
 
-#switch:
-#  - platform: gpio
-#    id: led
-#    pin: GPIO8
-#
-#interval:
-#  - interval: 1s
-#    then:
-#      - switch.toggle: led
-
 logger:
   baud_rate: 0
+#  level: DEBUG
 
 external_components:
   - source:
@@ -55,11 +50,54 @@ external_components:
       path: components
     components: [uart_api]
 
+
 uart_api:
+  id: uart_bridge
   uart_id: uart_ble
   api_port: 6053
   rx_buffer_size: 512
-#  status_pin:
-#    number: GPIO8
-#    inverted: true
   debug_echo: false
+
+ota:
+  platform: esphome
+  port: 3232
+
+switch:
+  - platform: template
+    id: ota_mode_switch
+    name: "OTA Mode"
+    optimistic: true
+    internal: false
+    on_turn_on:
+      - lambda: id(uart_bridge).set_ota_mode(true);
+    on_turn_off:
+      - lambda: id(uart_bridge).set_ota_mode(false);
+
+output:
+  - platform: gpio
+    id: led
+    pin: GPIO8
+    inverted: true
+
+light:
+  - platform: binary
+    id: led_light
+    output: led
+    internal: true
+    restore_mode: ALWAYS_OFF
+
+interval:
+  - interval: 200ms
+    then:
+      - if:
+          condition:
+            lambda: 'return id(ota_mode_switch).state;'
+          then:
+            - light.toggle: led_light
+  - interval: 1000ms
+    then:
+      - if:
+          condition:
+            lambda: 'return !id(ota_mode_switch).state;'
+          then:
+            - light.toggle: led_light

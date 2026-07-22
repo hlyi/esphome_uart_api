@@ -13,6 +13,7 @@ uart_api_ns = cg.esphome_ns.namespace("uart_api")
 UARTAPIBridge = uart_api_ns.class_("UARTAPIBridge", cg.Component, uart.UARTDevice)
 
 CONF_API_PORT = "api_port"
+CONF_OTA_PORT = "ota_port"
 CONF_RX_BUFFER_SIZE = "rx_buffer_size"
 CONF_DEBUG_ECHO = "debug_echo"
 CONF_STATUS_PIN = "status_pin"
@@ -22,6 +23,7 @@ CONFIG_SCHEMA = (
         {
             cv.GenerateID(): cv.declare_id(UARTAPIBridge),
             cv.Optional(CONF_API_PORT, default=6053): cv.port,
+            cv.Optional(CONF_OTA_PORT, default=3232): cv.port,
             cv.Optional(CONF_RX_BUFFER_SIZE, default=256): cv.int_range(min=64, max=2048),
             cv.Optional(CONF_DEBUG_ECHO, default=False): cv.boolean,
             cv.Optional(CONF_STATUS_PIN): pins.gpio_output_pin_schema,
@@ -71,6 +73,7 @@ async def to_code(config):
     await cg.register_component(var, config)
     await uart.register_uart_device(var, config)
     cg.add(var.set_api_port(config[CONF_API_PORT]))
+    cg.add(var.set_ota_port(config[CONF_OTA_PORT]))
     cg.add(var.set_rx_buffer_size(config[CONF_RX_BUFFER_SIZE]))
     cg.add(var.set_debug_echo(config[CONF_DEBUG_ECHO]))
     cg.add_build_flag("-DUSE_ETHERNET")
