@@ -1,0 +1,31 @@
+<<: !include "bleproxy_via_uart_baseline.yaml"
+
+output:
+  - platform: gpio
+    id: led
+    pin: GPIO8
+    inverted: true
+
+light:
+  - platform: binary
+    id: led_light
+    output: led
+    internal: true
+    restore_mode: ALWAYS_OFF
+
+interval:
+  - interval: 200ms
+    then:
+      - if:
+          condition:
+            lambda: 'return id(ota_mode_switch).state;'
+          then:
+            - light.toggle: led_light
+  - interval: 1000ms
+    then:
+      - if:
+          condition:
+            lambda: 'return !id(ota_mode_switch).state;'
+          then:
+            - light.toggle: led_light
+
