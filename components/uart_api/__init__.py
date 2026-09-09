@@ -43,6 +43,10 @@ class EthernetComponent : public Component {
  public:
   void setup() override {}
   bool is_connected() { return true; }
+  bool is_disabled() { return false; }
+  bool is_enabled() { return true; }
+  void enable() {}
+  void disable() {}
   const char *get_use_address() { return nullptr; }
   network::IPAddresses get_ip_addresses() { return {}; }
 };
