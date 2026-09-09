@@ -42,9 +42,9 @@ bluetooth_proxy:
   active: false
   connection_slots: 4
 
-logger:
+#logger:
 #  baud_rate: 0
-  level: DEBUG
+#  level: DEBUG
 
 external_components:
   - source:

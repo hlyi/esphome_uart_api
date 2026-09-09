@@ -6,7 +6,7 @@ light:
     rgb_order: GRB
     pin: GPIO8
     num_leds: 1
-    chipset: WS6812
+    chipset: WS2812
     internal: true
     restore_mode: ALWAYS_OFF
     id: led_light
